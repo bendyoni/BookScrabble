@@ -49,6 +49,5 @@ public class LFU implements CacheReplacementPolicy{
             usingMap.remove(victimWord);
             return victimWord;
         }
-    }
 
 }
