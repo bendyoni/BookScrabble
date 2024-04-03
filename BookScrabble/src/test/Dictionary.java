@@ -62,7 +62,7 @@ public class Dictionary {
 
     public boolean challenge( String word) { // Checks in the books whether the given word is in them or not. 
         //If it is, then update the Cache and the BloomFilter and return "true", if not - return "false"
-        
+
         boolean inBook;
         inBook = IOSearcher.search(word, dm_fileNames);
         if (inBook) {

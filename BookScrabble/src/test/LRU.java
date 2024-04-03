@@ -15,14 +15,14 @@ public class LRU implements CacheReplacementPolicy{
             queue.remove(word);  //We asked about the word so its priority for remove is less
         }
         else {
-            if (set.size() == CacheManager.cacheSize) {
+            if ((CacheManager.cacheSize < set.size()) && (CacheManager.cacheSize != 0)) {
                 String victimWord = queue.removeLast();
                 set.remove(victimWord); // Override remove()
-                set.add(word);
+                //set.add(word);
             }
         }
         queue.addFirst(word); // adds the word that was asked at the top of the queue ( will be last to be removed)
-        ///set.add(word);
+        set.add(word);
     }
 
     @Override

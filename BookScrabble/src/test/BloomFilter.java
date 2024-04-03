@@ -1,61 +1,58 @@
 package test;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
-public class BloomFilter {
-    private BitSet bits;
-    private String[] hashAlgs;
-
-    BloomFilter(int size, String...algs){
-        bits = new BitSet(size);
-        hashAlgs = algs;
-    }    
-
-    private int getHashCode(String word, String algo) {
-        try{
-        MessageDigest md = MessageDigest.getInstance(algo);
-        byte[] bytes = md.digest(word.getBytes());
-        BigInteger bi = new BigInteger(1,bytes);
-        return bi.intValue();
-        }
-        catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return 0;
+class BloomFilter {
+    private BitSet bitVector;
+    private List<MessageDigest> digesters;
+ 
+    BloomFilter(int size, String... algs) {
+        bitVector = new BitSet(size);
+        digesters = new ArrayList<>();
+        for (String alg : algs) {
+            try {
+                digesters.add(MessageDigest.getInstance(alg));
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
         }
     }
-
-    // A method that receives a word and adds it to the BloomField by turning on (seting) the relevant bits in the array
-    public void add(String word) { 
-       for (String algo : hashAlgs) {
-            int haschCode = getHashCode(word, algo);
-            int index = Math.abs(haschCode % bits.size());
-            bits.set(index);
-       }
+ 
+    void add(String word) {
+        byte[] bytes = word.getBytes(StandardCharsets.UTF_8);
+        for (MessageDigest digester : digesters) {
+            byte[] digest = digester.digest(bytes);
+            BigInteger bigInt = new BigInteger(1, digest);
+            int index = Math.abs(bigInt.intValue()) % bitVector.size();
+            bitVector.set(index);
+        }
     }
-
-    public boolean contains (String word) {
-        for (String algo : hashAlgs) {
-            int hashCode = getHashCode(word, algo);
-            if (bits.get(Math.abs(hashCode % bits.size())));
+ 
+    boolean contains(String word) {
+        byte[] bytes = word.getBytes(StandardCharsets.UTF_8);
+        for (MessageDigest digester : digesters) {
+            byte[] digest = digester.digest(bytes);
+            BigInteger bigInt = new BigInteger(1, digest);
+            int index = Math.abs(bigInt.intValue()) % bitVector.size();
+            if (!bitVector.get(index)) {
                 return false;
+            }
         }
         return true;
     }
-
-    // A method that returns a string of bloomField bits
+ 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (int i=0; i<bits.size(); i++)
-            if (bits.get(i))
-                sb.append('1');
-            else
-            sb.append('0');
-        
-            return sb.toString();
+        for (int i = 0; i < bitVector.length(); i++) {
+            sb.append(bitVector.get(i) ? '1' : '0');
+        }
+        return sb.toString();
     }
-
-} 
+ }

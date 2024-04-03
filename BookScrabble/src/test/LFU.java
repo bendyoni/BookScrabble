@@ -22,7 +22,7 @@ public class LFU implements CacheReplacementPolicy{
         set = usingQueue.computeIfAbsent(sumOfUse+1, k -> new LinkedHashSet<>());
         set.add(word);
 
-        if (CacheManager.cacheSize < usingQueue.size()){ //If the number of the usingQueue is greater than the cache, 
+        if (CacheManager.cacheSize < usingQueue.size() && CacheManager.cacheSize != 0){ //If the number of the usingQueue is greater than the cache, 
             //then the first word with this frequency is excluded from the lowest frequency set
             int minUsing = Collections.min(usingQueue.keySet());
             LinkedHashSet<String> minUsingSet = usingQueue.get(minUsing);
