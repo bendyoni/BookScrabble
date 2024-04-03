@@ -8,7 +8,7 @@ public class CacheManager {
 	Set<String> cacheWords = new HashSet<>();
 	CacheReplacementPolicy crp;
 
-	public CacheManager(int size, CacheReplacementPolicy crp) {
+	CacheManager(int size, CacheReplacementPolicy crp) {
 		CacheManager.cacheSize = size;
 		this.crp = crp;
 	}

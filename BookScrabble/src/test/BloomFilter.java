@@ -3,9 +3,7 @@ package test;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.List;
 
 public class BloomFilter {
     private BitSet bits;
@@ -29,7 +27,8 @@ public class BloomFilter {
         }
     }
 
-    public void add(String word) {
+    // A method that receives a word and adds it to the BloomField by turning on (seting) the relevant bits in the array
+    public void add(String word) { 
        for (String algo : hashAlgs) {
             int haschCode = getHashCode(word, algo);
             int index = Math.abs(haschCode % bits.size());
@@ -46,6 +45,7 @@ public class BloomFilter {
         return true;
     }
 
+    // A method that returns a string of bloomField bits
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
