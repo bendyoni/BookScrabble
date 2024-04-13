@@ -9,10 +9,10 @@ import java.util.BitSet;
 import java.util.List;
 
 class BloomFilter {
-    private BitSet bitVector;
-    private List<MessageDigest> digesters;
+    private final BitSet bitVector;
+    private final List<MessageDigest> digesters;
  
-    BloomFilter(int size, String... algs) {
+    public BloomFilter(int size, String... algs) {
         bitVector = new BitSet(size);
         digesters = new ArrayList<>();
         for (String alg : algs) {
@@ -24,7 +24,7 @@ class BloomFilter {
         }
     }
  
-    void add(String word) {
+    public void add(String word) {
         byte[] bytes = word.getBytes(StandardCharsets.UTF_8);
         for (MessageDigest digester : digesters) {
             byte[] digest = digester.digest(bytes);
@@ -34,7 +34,7 @@ class BloomFilter {
         }
     }
  
-    boolean contains(String word) {
+    public boolean contains(String word) {
         byte[] bytes = word.getBytes(StandardCharsets.UTF_8);
         for (MessageDigest digester : digesters) {
             byte[] digest = digester.digest(bytes);

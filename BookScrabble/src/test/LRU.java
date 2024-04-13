@@ -6,8 +6,8 @@ import java.util.LinkedList;
 import java.util.Set;
 
 public class LRU implements CacheReplacementPolicy{
-    Set<String> set = new HashSet<>();
-    Deque <String> queue = new LinkedList<>();
+    private final Set<String> set = new HashSet<>();
+    private final Deque <String> queue = new LinkedList<>();
 
     @Override
     public void add(String word) {

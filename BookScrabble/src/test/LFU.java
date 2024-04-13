@@ -6,8 +6,8 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 
 public class LFU implements CacheReplacementPolicy{
-    Map<String, Integer> usingMap = new HashMap<>(); // a Map of all of the words and there using times
-    Map<Integer, LinkedHashSet<String>> usingQueue = new HashMap<>(); // a Map that gives a LinkedHashSet of words
+    private final Map<String, Integer> usingMap = new HashMap<>(); // a Map of all of the words and there using times
+    private final Map<Integer, LinkedHashSet<String>> usingQueue = new HashMap<>(); // a Map that gives a LinkedHashSet of words
     //for every key of using times, by order
 
     @Override
@@ -22,7 +22,7 @@ public class LFU implements CacheReplacementPolicy{
         set = usingQueue.computeIfAbsent(sumOfUse+1, k -> new LinkedHashSet<>());
         set.add(word);
 
-        if (CacheManager.cacheSize < usingQueue.size() && CacheManager.cacheSize != 0){ //If the number of the usingQueue is greater than the cache, 
+        if (CacheManager.cacheSize < usingQueue.size() && CacheManager.cacheSize != 0){ //If the number of the usingQueue is greater than the cache,   
             //then the first word with this frequency is excluded from the lowest frequency set
             int minUsing = Collections.min(usingQueue.keySet());
             LinkedHashSet<String> minUsingSet = usingQueue.get(minUsing);
