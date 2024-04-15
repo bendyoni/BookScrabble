@@ -1,13 +1,15 @@
 package test;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 public class MyServer {
-    private int port;
-    private ClientHandler ch;
+    private final int port;
+    private final ClientHandler ch;
     private volatile boolean stop;
     private Thread threadOfServer;
     private ServerSocket server;
@@ -31,11 +33,13 @@ public class MyServer {
             while (!stop) {
                 try {   // Activating the communication mechanism injected in the ch variable
                         Socket aClient = server.accept();
-                        ch.handleClient(aClient.getInputStream(), aClient.getOutputStream());
+                        InputStream inFromClaient = aClient.getInputStream();
+                        OutputStream outToClaient = aClient.getOutputStream();
+                        ch.handleClient(inFromClaient, outToClaient);
                         System.out.println("connected to server");
 
-                        aClient.getInputStream().close();
-                        aClient.getOutputStream().close();
+                        inFromClaient.close();
+                        outToClaient.close();
                         aClient.close();
                     } catch (SocketTimeoutException e) {} // ignore
                     catch (IOException e) {e.printStackTrace();}

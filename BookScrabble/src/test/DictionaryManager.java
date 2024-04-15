@@ -1,11 +1,12 @@
 package test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DictionaryManager {
     private static DictionaryManager instance;  // for singleton
-    private Map<String, DictionaryProxy> dictionaryMap;
+    private final Map<String, DictionaryProxy> dictionaryMap;
 
     private DictionaryManager() {
         dictionaryMap = new HashMap<>();
@@ -23,48 +24,45 @@ public class DictionaryManager {
        If it exists, the method returns the existing dictionary from the given structure. 
        If not, it creates a new dictionary and adds it to the data structure. (The key of the dictionarys are defined by their file list) */
 
-    private DictionaryProxy getDictionary(String[] fileNames) {
-        String key = String.join(",", fileNames); 
-        if (!dictionaryMap.containsKey(key)) {
-            DictionaryProxy pDictionary = new DictionaryProxy(new Dictionary(fileNames));
-            dictionaryMap.put(key,pDictionary);
+    private ArrayList<DictionaryProxy> getDictionaryProxies(String[] fileNames) {
+        ArrayList<DictionaryProxy> proxies = new ArrayList<DictionaryProxy>();
+        for (String file : fileNames){
+            if (!dictionaryMap.containsKey(file)) {  // saves the files in cach so i dont need to duplicate them - proxy pattern
+                DictionaryProxy pDictionary = new DictionaryProxy(new Dictionary(file));
+                dictionaryMap.put(file, pDictionary);
+            }
+            proxies.add(dictionaryMap.get(file));
         }
 
-        return dictionaryMap.get(key);
+        return proxies;
     }
 
     public boolean query(String... args) {
+        boolean exist = false;
         String[] fileNames = new String[args.length - 1];
         String searchWord = args[args.length - 1];  // the word i want to search for
         System.arraycopy(args, 0, fileNames, 0, fileNames.length);
-        DictionaryProxy pDictinary = getDictionary(fileNames);
-        return pDictinary.query(searchWord);
+        ArrayList<DictionaryProxy> proxis = getDictionaryProxies(fileNames);
+        for (DictionaryProxy proxy : proxis) {
+            if(proxy.query(searchWord))
+                exist = true;
+        }
+        return exist;
     }
-
-    // public boolean query(String... args) {
-    //     String[] fileNames = new String[args.length - 1];
-    //     String searchWord = args[args.length - 1];  // the word i want to search for
-        // boolean found = false;
-
-        // for (DictionaryProxy pDic : dictionaryMap.values()) {
-        //     if (pDic.query(searchWord))
-        //         found = true;
-        // }
-        // return found;
-    //}
 
     public boolean challenge (String... args) {
+        boolean exist = false;
         String[] fileNames = new String[args.length - 1];
         String searchWord = args[args.length - 1];  // the word i want to search for
         System.arraycopy(args, 0, fileNames, 0, fileNames.length);
 
-        DictionaryProxy pDictionary = getDictionary(fileNames);
-        return pDictionary.challenge(searchWord);
+        ArrayList<DictionaryProxy> proxies = getDictionaryProxies(fileNames);
+        for (DictionaryProxy proxy : proxies) {
+           if(proxy.challenge(searchWord))
+            exist = true;
+        }
+        return exist;
     }
-
-    // int getSize() {
-    //     return dictionaryMap.size();
-    // }
 
     int getSize() {
         int size = 0;
@@ -75,9 +73,10 @@ public class DictionaryManager {
         return size;
     }
 
-   //  A class called DictionaryProxy that represents a proxy for the original Dictionary class 
+
+   //  A class that represents a proxy for the original Dictionary class 
     public class DictionaryProxy extends Dictionary {
-        private Dictionary dictionary;
+        private final Dictionary dictionary;
 
         public DictionaryProxy(Dictionary dictionary) {
             this.dictionary = dictionary;
