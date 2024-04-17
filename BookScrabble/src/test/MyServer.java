@@ -29,6 +29,8 @@ public class MyServer {
         try {
             server = new ServerSocket(port);
             server.setSoTimeout(1000);
+            //System.out.println("connected to server");
+           
 
             while (!stop) {
                 try {   // Activating the communication mechanism injected in the ch variable
@@ -36,8 +38,7 @@ public class MyServer {
                         InputStream inFromClaient = aClient.getInputStream();
                         OutputStream outToClaient = aClient.getOutputStream();
                         ch.handleClient(inFromClaient, outToClaient);
-                        System.out.println("connected to server");
-
+                        
                         inFromClaient.close();
                         outToClaient.close();
                         aClient.close();

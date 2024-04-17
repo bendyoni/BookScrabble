@@ -27,7 +27,7 @@ public class DictionaryManager {
     private ArrayList<DictionaryProxy> getDictionaryProxies(String[] fileNames) {
         ArrayList<DictionaryProxy> proxies = new ArrayList<DictionaryProxy>();
         for (String file : fileNames){
-            if (!dictionaryMap.containsKey(file)) {  // saves the files in cach so i dont need to duplicate them - proxy pattern
+            if (!dictionaryMap.containsKey(file)) {  // saves the files in cach so i dont need to duplicate them - Flyweight pattern
                 DictionaryProxy pDictionary = new DictionaryProxy(new Dictionary(file));
                 dictionaryMap.put(file, pDictionary);
             }
